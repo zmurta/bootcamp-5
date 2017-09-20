@@ -129,10 +129,42 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
     /* Map properties */
     $scope.map = {
       center: {
-        latitude: 29.65163059999999,
-        longitude: -82.3410518
+        latitude: 29.6436,
+        longitude: -82.3549
       }, 
       zoom: 14
     }
+    // Set marker values
+    var markers = [];
+    Listings.getAll().then(function(response) {
+      var listings = response.data;
+
+      listings.forEach( (listing, i) => {
+        if(listing.coordinates) {
+          var ret = {
+            latitude: listing.coordinates.latitude,
+            longitude: listing.coordinates.longitude,
+            title: {
+              code: listing.code,
+              name: listing.name,
+              address: listing.address
+            },
+            id: i,
+            show: false
+          }
+
+          markers.push(ret);
+        }
+      });      
+    });
+
+    $scope.markers = markers;
+
+    // Show fields of markers when clicked on
+    $scope.clickMarker = function(marker, eventName, model) {
+        console.log("Clicked!");
+        model.show = !model.show;
+    };
+    
   }
 ]);
